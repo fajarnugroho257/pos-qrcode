@@ -48,4 +48,14 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class, 'role_id', 'role_id');
     }
+
+    public function restaurants()
+    {
+        return $this->belongsToMany(
+            Restaurant::class,
+            'restaurant_user',
+            'user_id',
+            'restaurant_id'
+        );
+    }
 }
