@@ -20,6 +20,7 @@ class LoginController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+    // test
     public function loginProcess(Request $request)
     {
         $credentials = $request->validate([
