@@ -19,11 +19,11 @@ class RoleTableseeder extends Seeder
         ]);
         Role::create([
             'role_id' => 'R0002',
-            'role_name' => 'admin',
+            'role_name' => 'owner',
         ]);
         Role::create([
             'role_id' => 'R0003',
-            'role_name' => 'pengguna',
+            'role_name' => 'cashier',
         ]);
     }
 }
