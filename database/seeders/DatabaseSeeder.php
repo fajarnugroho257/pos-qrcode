@@ -4,11 +4,6 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\User;
-use App\Models\Role;
-use App\Models\Menu;
-use App\Models\Role_menu;
-use App\Models\Heading;
 
 class DatabaseSeeder extends Seeder
 {
@@ -22,6 +17,8 @@ class DatabaseSeeder extends Seeder
             UserTableseeder::class,
             MenuTableseeder::class,
             RoleMenuTableseeder::class,
+            RestaurantSeeder::class,
+            RestaurantUserSeeder::class,
         ]);
 
     }
