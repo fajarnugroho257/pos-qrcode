@@ -18,15 +18,14 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    public $incrementing = false;
+    // public $incrementing = false;
     protected $fillable = [
         'name',
         'username',
         'password',
-        'user_id',
         'role_id',
     ];
-    protected $primaryKey = 'user_id';
+    protected $primaryKey = 'id';
     /**
      * The attributes that should be hidden for serialization.
      *

@@ -50,33 +50,29 @@ class DataUserController extends Controller
             'role_id' => 'required',
             'user_st' => 'required'
         ]);
-        $user_id = $this->last_user_id();
-        if ($user_id) {
-            User::create([
-                'user_id' => $user_id,
-                'name' => $request->name,
-                'role_id' => $request->role_id,
-                'username' => $request->username,
-                'user_st' => $request->user_st,
-                'password' => bcrypt($request->password),
-            ]);
-        }
+        User::create([
+            'name' => $request->name,
+            'role_id' => $request->role_id,
+            'username' => $request->username,
+            'user_st' => $request->user_st,
+            'password' => bcrypt($request->password),
+        ]);
         //redirect
         return redirect()->route('dataUserAdd')->with('success', 'Data berhasil disimpan');
     }
 
-    function last_user_id() {
-        // get last user id
-        $last_user = User::select('user_id')->orderBy('user_id', 'DESC')->first();
-        $last_number = substr($last_user->user_id, 1, 6) + 1;
-        $zero = '';
-        for ($i=strlen($last_number); $i <=3; $i++) {
-            $zero .= '0';
-        }
-        $new_id = 'U'.$zero.$last_number;
-        //
-        return $new_id;
-    }
+    // function last_user_id() {
+    //     // get last user id
+    //     $last_user = User::select('user_id')->orderBy('user_id', 'DESC')->first();
+    //     $last_number = substr($last_user->user_id, 1, 6) + 1;
+    //     $zero = '';
+    //     for ($i=strlen($last_number); $i <=3; $i++) {
+    //         $zero .= '0';
+    //     }
+    //     $new_id = 'U'.$zero.$last_number;
+    //     //
+    //     return $new_id;
+    // }
     
     /**
      * Display the specified resource.
@@ -89,9 +85,9 @@ class DataUserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $user_id)
+    public function edit(string $id)
     {
-        $detail = User::where('user_id', $user_id)->first();
+        $detail = User::find($id);
         if (empty($detail)) {
             return redirect()->route('dataUser')->with('error', 'Data tidak ditemukan');
         }
@@ -105,16 +101,16 @@ class DataUserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $user_id)
+    public function update(Request $request, string $id)
     {
         $request->validate([
-            'username' => 'required|unique:users,username,' . $user_id . ',user_id',
+            'username' => 'required|unique:users,username,' . $id . ',id',
             'password' => 'nullable|min:6',
             'name' => 'required',
             'role_id' => 'required',
             'user_st' => 'required'
         ]);
-        $detail = User::where('user_id', $user_id)->first();
+        $detail = User::find($id);
         if (empty($detail)) {
             return redirect()->route('dataUser')->with('error', 'Data tidak ditemukan');
         }
@@ -126,7 +122,7 @@ class DataUserController extends Controller
             $detail->password = bcrypt($request->password);
         }
         if ($detail->save()) {
-            return redirect()->route('dataUserEdit', $user_id)->with('success', 'Data berhasil diupdate');
+            return redirect()->route('dataUserEdit', $id)->with('success', 'Data berhasil diupdate');
         } else {
             return redirect()->route('dataUser')->with('error', 'Gagal update date');
         }
@@ -135,9 +131,9 @@ class DataUserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $user_id)
+    public function destroy(string $id)
     {
-        $detail = User::where('user_id', $user_id)->first();
+        $detail = User::find($id);
         if ($detail->delete()) {
             return redirect()->route('dataUser')->with('success', 'Data berhasil dihapus');
         }

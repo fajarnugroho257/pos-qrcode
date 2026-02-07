@@ -42,8 +42,8 @@
                                 <td class="px-6 py-4">{{ $data->username }}</td>
                                 <td class="px-6 py-4 text-center">{{ $data->app_role->role_name }}</td>
                                 <td class="px-6 py-4 text-center">
-                                    <a href="{{ route('dataUserEdit', $data->user_id) }}" class="text-gray-400 hover:text-indigo-600 p-1"><i class="fas fa-pen-to-square"></i></a>
-                                    <a href="{{ route('dataUserDelete', $data->user_id) }}" onclick="return confirm('Apakah anda yakin akan menghapus data ini ?')" class="text-gray-400 hover:text-red-600 p-1"><i class="fas fa-trash-can"></i></a>
+                                    <a href="{{ route('dataUserEdit', $data->id) }}" class="text-gray-400 hover:text-indigo-600 p-1"><i class="fas fa-pen-to-square"></i></a>
+                                    <a href="{{ route('dataUserDelete', $data->id) }}" onclick="return confirm('Apakah anda yakin akan menghapus data ini ?')" class="text-gray-400 hover:text-red-600 p-1"><i class="fas fa-trash-can"></i></a>
                                 </td>
                             </tr>
                         @endforeach

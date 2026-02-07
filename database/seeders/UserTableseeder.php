@@ -14,7 +14,7 @@ class UserTableseeder extends Seeder
     public function run(): void
     {
         User::create([
-            'user_id' => 'U0001',
+            'id' => '1',
             'name' => 'Developer',
             'user_st' => 'yes',
             'role_id' => 'R0001',
@@ -22,7 +22,7 @@ class UserTableseeder extends Seeder
             'password' => bcrypt('dev220899'),
         ]);
         User::create([
-            'user_id' => 'U0002',
+            'id' => '2',
             'name' => 'Admin',
             'user_st' => 'yes',
             'role_id' => 'R0002',
@@ -30,7 +30,7 @@ class UserTableseeder extends Seeder
             'password' => bcrypt('admin123'),
         ]);
         User::create([
-            'user_id' => 'U0003',
+            'id' => '3',
             'name' => 'Pengguna',
             'user_st' => 'yes',
             'role_id' => 'R0003',

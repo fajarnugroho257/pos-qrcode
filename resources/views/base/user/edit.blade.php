@@ -17,7 +17,7 @@
             </div>
             <hr class="my-4 text-gray-300">
             @include('layouts.notification')
-            <form action="{{ route('dataUserEditProcess', $detail->user_id) }}" method="POST" >
+            <form action="{{ route('dataUserEditProcess', $detail->id) }}" method="POST" >
                 @method('POST')
                 @csrf
                 <div class="space-y-8 mb-4">

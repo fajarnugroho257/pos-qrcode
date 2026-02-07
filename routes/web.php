@@ -57,9 +57,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/data-user', [DataUserController::class, 'index'])->name('dataUser');
         Route::get('/add-data-user', [DataUserController::class, 'create'])->name('dataUserAdd');
         Route::post('/process-add-data-user', [DataUserController::class, 'store'])->name('dataUserAddProcess');
-        Route::get('/update-data-user/{user_id}', [DataUserController::class, 'edit'])->name('dataUserEdit');
-        Route::post('/process-update-data-user/{user_id}', [DataUserController::class, 'update'])->name('dataUserEditProcess');
-        Route::get('/process-delete-data-user/{user_id}', [DataUserController::class, 'destroy'])->name('dataUserDelete');
+        Route::get('/update-data-user/{id}', [DataUserController::class, 'edit'])->name('dataUserEdit');
+        Route::post('/process-update-data-user/{id}', [DataUserController::class, 'update'])->name('dataUserEditProcess');
+        Route::get('/process-delete-data-user/{id}', [DataUserController::class, 'destroy'])->name('dataUserDelete');
     });
     
     Route::post('/keluar', [LoginController::class, 'logOut'])->name('logOut');
