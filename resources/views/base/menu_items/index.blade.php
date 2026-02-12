@@ -54,6 +54,7 @@
                         <tr class="bg-gray-50/50 text-gray-600 text-xs uppercase tracking-wider text-center">
                             <th class="px-6 py-4 font-semibold border-b border-gray-100">No</th>
                             <th class="px-6 py-4 font-semibold border-b border-gray-100">Nama Menu</th>
+                            <th class="px-6 py-4 font-semibold border-b border-gray-100">Gambar</th>
                             <th class="px-6 py-4 font-semibold border-b border-gray-100">Kategori</th>
                             <th class="px-6 py-4 font-semibold border-b border-gray-100">Harga</th>
                             <th class="px-6 py-4 font-semibold border-b border-gray-100">Status</th>
@@ -71,6 +72,16 @@
                                 <td class="px-6 py-4 text-center">
                                     {{ $item->name }}
                                 </td>
+
+                                <td class="px-6 py-4 text-center">
+                                    @if ($item->image_url)
+                                        <img src="{{ asset('storage/'.$item->image_url) }}"
+                                            class="h-24 w-24 object-cover rounded-md mx-auto">
+                                    @else
+                                        <span class="text-gray-400">-</span>
+                                    @endif
+                                </td>
+
 
                                 <td class="px-6 py-4 text-center">
                                     {{ $item->category?->name ?? '-' }}

@@ -29,7 +29,10 @@
             @include('layouts.notification')
 
             {{-- Form --}}
-            <form action="{{ route('menuItemsUpdate', $menuItem->id) }}" method="POST">
+            <form action="{{ route('menuItemsUpdate', $menuItem->id) }}"
+                method="POST"
+                enctype="multipart/form-data">
+
                 @csrf
                 @method('PUT')
 
@@ -80,6 +83,24 @@
                                    class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm
                                           focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
                         </div>
+
+                        {{-- Image --}}
+                        <div class="space-y-2 md:col-span-2">
+                            <label class="block text-sm font-semibold text-gray-700">
+                                Gambar Menu
+                            </label>
+                            <input type="file"
+                                name="image"
+                                accept="image/*"
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm
+                                        focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
+
+                            @if ($menuItem->image_url)
+                                <img src="{{ asset('storage/' . $menuItem->image_url) }}"
+                                    class="mt-3 h-32 rounded-lg border object-cover">
+                            @endif
+                        </div>
+
 
                         {{-- Status --}}
                         <div class="space-y-2">

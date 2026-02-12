@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\MenuItem;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+
 
 class MenuListController extends Controller
 {
@@ -47,7 +49,15 @@ class MenuListController extends Controller
             'name'        => 'required|string|max:100',
             'price'       => 'required|numeric|min:0',
             'is_active'   => 'required|boolean',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
+
+        $imagePath = null;
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')
+                ->store('menu-items', 'public');
+        }
 
         MenuItem::create([
             'restaurant_id' => auth()->user()->activeRestaurant()->id,
@@ -55,6 +65,7 @@ class MenuListController extends Controller
             'name'          => $request->name,
             'base_price'         => $request->price,
             'is_available'     => $request->is_active,
+            'image_url'     => $imagePath,
         ]);
 
         return redirect()
@@ -87,11 +98,20 @@ class MenuListController extends Controller
             'name'        => 'required|string|max:100',
             'base_price'       => 'required|numeric|min:0',
             'is_available'   => 'required|boolean',
+            'image'        => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $item = MenuItem::where('id', $id)
             ->where('restaurant_id', auth()->user()->activeRestaurant()->id)
             ->firstOrFail();
+            if ($request->hasFile('image')) {
+            // delete old image
+                if ($item->image_url && Storage::disk('public')->exists($item->image_url)) {
+                        Storage::disk('public')->delete($item->image_url);
+                    }
+                $item->image_url = $request->file('image')
+                    ->store('menu-items', 'public');
+            }
 
         $item->update($request->only([
             'category_id',
@@ -110,6 +130,10 @@ class MenuListController extends Controller
         $item = MenuItem::where('id', $id)
             ->where('restaurant_id', auth()->user()->activeRestaurant()->id)
             ->firstOrFail();
+
+        if ($item->image_url && Storage::disk('public')->exists($item->image_url)) {
+            Storage::disk('public')->delete($item->image_url);
+        }
 
         $item->delete();
 

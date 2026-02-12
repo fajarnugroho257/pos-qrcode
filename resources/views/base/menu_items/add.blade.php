@@ -29,7 +29,7 @@
             @include('layouts.notification')
 
             {{-- Form --}}
-            <form action="{{ route('menuItemsStore') }}" method="POST">
+            <form action="{{ route('menuItemsStore') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div class="space-y-8 mb-4">
@@ -79,6 +79,19 @@
                                    class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm
                                           focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
                         </div>
+
+                        {{-- Image --}}
+                        <div class="space-y-2 md:col-span-2">
+                            <label class="block text-sm font-semibold text-gray-700">
+                                Gambar Menu
+                            </label>
+                            <input type="file"
+                                name="image"
+                                accept="image/*"
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm
+                                        focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
+                        </div>
+
 
                         {{-- Status --}}
                         <div class="space-y-2">

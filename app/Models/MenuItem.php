@@ -12,6 +12,7 @@ class MenuItem extends Model
         'name',
         'base_price',
         'is_available',
+        'image_url'
     ];
 
     public function category()
