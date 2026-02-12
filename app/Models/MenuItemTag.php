@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class MenuItemTag extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'menu_item_id',
+        'tag_id',
+    ];
 }

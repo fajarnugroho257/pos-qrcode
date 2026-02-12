@@ -5,6 +5,10 @@ use App\Http\Controllers\base\DataUserController;
 use App\Http\Controllers\base\MenuController;
 use App\Http\Controllers\base\RoleController;
 use App\Http\Controllers\base\RolemenuController;
+use App\Http\Controllers\base\MenuCategoriesController;
+use App\Http\Controllers\base\MenuAddonsController;
+use App\Http\Controllers\base\MenuTagsController;
+use App\Http\Controllers\base\MenuListController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 /*
@@ -60,6 +64,90 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/update-data-user/{id}', [DataUserController::class, 'edit'])->name('dataUserEdit');
         Route::post('/process-update-data-user/{id}', [DataUserController::class, 'update'])->name('dataUserEditProcess');
         Route::get('/process-delete-data-user/{id}', [DataUserController::class, 'destroy'])->name('dataUserDelete');
+    });
+
+    Route::middleware(['checkMenu:menuItems'])->group(function () {
+
+        // Categories
+        Route::get('/menu/categories', [MenuCategoriesController::class, 'index'])
+            ->name('menuCategories');
+
+        Route::get('/menu/categories/create', [MenuCategoriesController::class, 'create'])
+            ->name('menuCategoriesCreate');
+
+        Route::post('/menu/categories', [MenuCategoriesController::class, 'store'])
+            ->name('menuCategoriesStore');
+
+        Route::delete('/menu/categories/{id}', [MenuCategoriesController::class, 'destroy'])
+        ->name('menuCategoriesDelete');
+        
+        Route::get('/menu/categories/{id}', [MenuCategoriesController::class, 'edit'])
+            ->name('menuCategoriesEdit');
+
+        Route::put('/menu/categories/{id}', [MenuCategoriesController::class, 'update'])
+        ->name('menuCategoriesUpdate');
+
+        // Addons
+        Route::get('/menu/addons', [MenuAddonsController::class, 'index'])
+            ->name('menuAddons');
+
+        Route::get('/menu/addons/create', [MenuAddonsController::class, 'create'])
+            ->name('menuAddonsCreate');
+
+        Route::post('/menu/addons', [MenuAddonsController::class, 'store'])
+            ->name('menuAddonsStore');
+
+        Route::get('/menu/addons/{id}', [MenuAddonsController::class, 'edit'])
+            ->name('menuAddonsEdit');
+
+        Route::put('/menu/addons/{id}', [MenuAddonsController::class, 'update'])
+            ->name('menuAddonsUpdate');
+
+        Route::delete('/menu/addons/{id}', [MenuAddonsController::class, 'destroy'])
+            ->name('menuAddonsDelete');
+
+        // Tags
+        Route::get('/menu/tags', [MenuTagsController::class, 'index'])
+            ->name('menuTags');
+
+        Route::get('/menu/tags/create', [MenuTagsController::class, 'create'])
+            ->name('menuTagsCreate');
+
+        Route::post('/menu/tags', [MenuTagsController::class, 'store'])
+            ->name('menuTagsStore');
+
+        Route::get('/menu/tags/{id}', [MenuTagsController::class, 'edit'])
+            ->name('menuTagsEdit');
+
+        Route::put('/menu/tags/{id}', [MenuTagsController::class, 'update'])
+            ->name('menuTagsUpdate');
+
+        Route::delete('/menu/tags/{id}', [MenuTagsController::class, 'destroy'])
+            ->name('menuTagsDelete');
+
+
+        // Menu Items
+        Route::get('/menu/items', [MenuListController::class, 'index'])
+            ->name('menuItems');
+
+        Route::get('/menu/items/create', [MenuListController::class, 'create'])
+            ->name('menuItemsCreate');
+
+        Route::post('/menu/items', [MenuListController::class, 'store'])
+            ->name('menuItemsStore');
+
+        Route::get('/menu/items/{id}', [MenuListController::class, 'edit'])
+            ->name('menuItemsEdit');
+
+        Route::put('/menu/items/{id}', [MenuListController::class, 'update'])
+            ->name('menuItemsUpdate');
+
+        Route::delete('/menu/items/{id}', [MenuListController::class, 'destroy'])
+            ->name('menuItemsDelete');
+
+
+
+
     });
     
     Route::post('/keluar', [LoginController::class, 'logOut'])->name('logOut');

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Role;
+use App\Models\Restaurant;
 
 class User extends Authenticatable
 {
@@ -58,4 +59,15 @@ class User extends Authenticatable
             'restaurant_id'
         );
     }
+
+    public function activeRestaurant()
+    {
+        $ownedRestaurant = Restaurant::where('admin_user_id', $this->id)->first();
+        if ($ownedRestaurant) {
+            return $ownedRestaurant;
+        }
+
+        return $this->restaurants()->first();
+    }
+
 }

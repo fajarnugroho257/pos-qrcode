@@ -44,22 +44,6 @@
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {{-- Restaurant --}}
-                            <div class="space-y-2">
-                                <label class="block text-sm font-semibold text-gray-700">
-                                    Restoran
-                                </label>
-                                <select name="restaurant_id"
-                                        class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
-                                    <option value="">-- Pilih Restoran --</option>
-                                    @foreach ($restaurants as $restaurant)
-                                        <option value="{{ $restaurant->id }}"
-                                            @selected(old('restaurant_id') == $restaurant->id)>
-                                            {{ $restaurant->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
 
                             {{-- Category Name --}}
                             <div class="space-y-2">

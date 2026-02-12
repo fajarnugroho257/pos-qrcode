@@ -4,14 +4,15 @@
 <div>
     <main class="max-w-7xl mx-auto py-8 px-4">
         <div class="bg-white p-8 md:p-10 rounded-2xl shadow-sm border border-gray-200 min-h-100">
+
             {{-- Header --}}
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                 <div>
                     <h2 class="text-sm md:text-xl font-bold text-gray-800">
-                        {{ $title ?? 'Tambah Kategori' }}
+                        {{ $title ?? 'Edit Kategori' }}
                     </h2>
                     <p class="text-xs md:text-sm text-gray-500">
-                        {{ $desc ?? 'Kategori menu restoran' }}
+                        {{ $desc ?? 'Ubah data kategori menu restoran' }}
                     </p>
                 </div>
                 <div class="flex justify-end gap-3">
@@ -27,8 +28,9 @@
             @include('layouts.notification')
 
             {{-- Form --}}
-            <form action="{{ route('menuCategoriesStore') }}" method="POST">
+            <form action="{{ route('menuCategoriesUpdate', $category->id) }}" method="POST">
                 @csrf
+                @method('PUT')
 
                 <div class="space-y-8 mb-4">
                     <div>
@@ -44,22 +46,6 @@
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {{-- Restaurant --}}
-                            <div class="space-y-2">
-                                <label class="block text-sm font-semibold text-gray-700">
-                                    Restoran
-                                </label>
-                                <select name="restaurant_id"
-                                        class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
-                                    <option value="">-- Pilih Restoran --</option>
-                                    @foreach ($restaurants as $restaurant)
-                                        <option value="{{ $restaurant->id }}"
-                                            @selected(old('restaurant_id') == $restaurant->id)>
-                                            {{ $restaurant->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
 
                             {{-- Category Name --}}
                             <div class="space-y-2">
@@ -68,26 +54,28 @@
                                 </label>
                                 <input type="text"
                                        name="name"
-                                       value="{{ old('name') }}"
+                                       value="{{ old('name', $category->name) }}"
                                        placeholder="Contoh: Minuman"
                                        class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
                             </div>
+
                         </div>
                     </div>
                 </div>
 
                 {{-- Footer --}}
                 <div class="bg-gray-50 px-8 py-6 flex items-center justify-end gap-3 border-t border-gray-100">
-                    <button type="reset"
-                            class="px-6 py-2.5 text-sm font-semibold text-gray-600 hover:text-gray-800 transition-colors">
-                        Reset
-                    </button>
+                    <a href="{{ route('menuCategories') }}"
+                       class="px-6 py-2.5 text-sm font-semibold text-gray-600 hover:text-gray-800 transition-colors">
+                        Batal
+                    </a>
                     <button type="submit"
                             class="px-8 py-2.5 bg-indigo-600 text-white text-sm font-bold rounded-md md:rounded-lg shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all active:scale-95">
-                        Simpan
+                        Update
                     </button>
                 </div>
             </form>
+
         </div>
     </main>
 </div>

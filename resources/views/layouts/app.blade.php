@@ -151,5 +151,6 @@
     <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
     @vite('resources/js/app.js')
     @yield('javascript')
+    @stack('scripts')
 </body>
 </html>
