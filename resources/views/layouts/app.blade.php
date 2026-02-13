@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css">
     <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+
     @vite('resources/css/app.css')
     <style>
         .sidebar-clip {
@@ -24,6 +26,7 @@
             transform: scale(100%) !important;
         }
     </style>
+    @stack('styles')
 </head>
 <body class="bg-gray-100 font-sans text-gray-900">
 
@@ -149,6 +152,7 @@
     @yield('content')
     <!-- jQuery -->
     <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     @vite('resources/js/app.js')
     @yield('javascript')
     @stack('scripts')

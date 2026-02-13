@@ -1,4 +1,15 @@
 @extends('layouts.app')
+@push('styles')
+<style>
+.select2-container--default .select2-selection--multiple {
+    border-radius: 0.75rem;
+    border-color: #e5e7eb;
+    min-height: 46px;
+    padding: 6px;
+}
+</style>
+@endpush
+
 
 @section('content')
 <div>
@@ -69,6 +80,58 @@
                                 @endforeach
                             </select>
                         </div>
+
+
+                        {{-- Addon --}}
+                        @php
+                            $selectedAddons = old(
+                                'addons',
+                                $menuItem->addons->pluck('id')->toArray()
+                            );
+                        @endphp
+
+                        <div class="space-y-2 md:col-span-2">
+                            <label class="block text-sm font-semibold text-gray-700">
+                                Addon
+                            </label>
+                            <select name="addons[]"
+                                    multiple
+                                    class="select2 w-full px-4 py-3 border border-gray-200 rounded-xl text-sm">
+                                @foreach ($addons as $addon)
+                                    <option value="{{ $addon->id }}"
+                                        {{ in_array($addon->id, $selectedAddons) ? 'selected' : '' }}>
+                                        {{ $addon->name }} (Rp {{ number_format($addon->price) }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+
+                        {{-- Tag --}}
+                        @php
+                            $selectedTags = old(
+                                'tags',
+                                $menuItem->tags->pluck('id')->toArray()
+                            );
+                        @endphp
+
+                        <div class="space-y-2 md:col-span-2">
+                            <label class="block text-sm font-semibold text-gray-700">
+                                Tag
+                            </label>
+                            <select name="tags[]"
+                                    multiple
+                                    class="select2 w-full px-4 py-3 border border-gray-200 rounded-xl text-sm">
+                                @foreach ($tags as $tag)
+                                    <option value="{{ $tag->id }}"
+                                        {{ in_array($tag->id, $selectedTags) ? 'selected' : '' }}>
+                                        {{ $tag->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+
 
                         {{-- Harga --}}
                         <div class="space-y-2">
@@ -142,3 +205,14 @@
     </main>
 </div>
 @endsection
+@push('scripts')
+<script>
+$(document).ready(function () {
+    $('.select2').select2({
+        placeholder: 'Pilih',
+        allowClear: true,
+        width: '100%'
+    });
+});
+</script>
+@endpush

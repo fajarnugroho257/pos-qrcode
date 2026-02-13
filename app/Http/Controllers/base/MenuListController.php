@@ -5,6 +5,9 @@ namespace App\Http\Controllers\base;
 use App\Http\Controllers\Controller;
 use App\Models\MenuItem;
 use App\Models\Category;
+use App\Models\Addon;
+use App\Models\Tag;
+use App\Models\MenuItemTag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -37,8 +40,20 @@ class MenuListController extends Controller
             auth()->user()->activeRestaurant()->id
         )->get();
 
+        $addons = Addon::where(
+            'restaurant_id',
+            auth()->user()->activeRestaurant()->id
+        )->get();
+
+        $tags = Tag::where(
+            'restaurant_id',
+            auth()->user()->activeRestaurant()->id
+        )->get();
+
         return view('base.menu_items.add', [
             'categories' => $categories,
+            'addons' => $addons,
+            'tags' => $tags,
         ]);
     }
 
@@ -50,6 +65,10 @@ class MenuListController extends Controller
             'price'       => 'required|numeric|min:0',
             'is_active'   => 'required|boolean',
             'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'addons'      => 'nullable|array',
+            'addons.*'    => 'exists:addons,id',
+            'tags'        => 'nullable|array',
+            'tags.*'      => 'exists:tags,id',
         ]);
 
         $imagePath = null;
@@ -59,7 +78,7 @@ class MenuListController extends Controller
                 ->store('menu-items', 'public');
         }
 
-        MenuItem::create([
+        $item = MenuItem::create([
             'restaurant_id' => auth()->user()->activeRestaurant()->id,
             'category_id'   => $request->category_id,
             'name'          => $request->name,
@@ -67,6 +86,14 @@ class MenuListController extends Controller
             'is_available'     => $request->is_active,
             'image_url'     => $imagePath,
         ]);
+
+        if ($request->filled('addons')) {
+            $item->addons()->sync($request->addons);
+        }
+
+        if ($request->filled('tags')) {
+            $item->tags()->sync($request->tags);
+        }
 
         return redirect()
             ->route('menuItems')
@@ -77,19 +104,31 @@ class MenuListController extends Controller
     {
         $restaurantId = auth()->user()->activeRestaurant()->id;
 
-        $item = MenuItem::where('id', $id)
+        $menuItem = MenuItem::with(['addons', 'tags']) // ⬅️ WAJIB
+            ->where('id', $id)
             ->where('restaurant_id', $restaurantId)
             ->firstOrFail();
 
         $categories = Category::where('restaurant_id', $restaurantId)->get();
 
+        $addons = Addon::where('restaurant_id', $restaurantId)
+            ->orderBy('name')
+            ->get();
+
+        $tags = Tag::where('restaurant_id', $restaurantId)
+            ->orderBy('name')
+            ->get();
+
         return view('base.menu_items.edit', [
-            'title' => 'Edit Menu',
-            'desc' => 'Ubah data menu restoran',
-            'menuItem' => $item,
+            'title'      => 'Edit Menu',
+            'desc'       => 'Ubah data menu restoran',
+            'menuItem'   => $menuItem,
             'categories' => $categories,
+            'addons'     => $addons,
+            'tags'       => $tags,
         ]);
     }
+
 
     public function update(Request $request, $id)
     {
@@ -99,6 +138,12 @@ class MenuListController extends Controller
             'base_price'       => 'required|numeric|min:0',
             'is_available'   => 'required|boolean',
             'image'        => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            // ⬇️ VALIDASI RELASI
+            'addons'       => 'nullable|array',
+            'addons.*'     => 'exists:addons,id',
+
+            'tags'         => 'nullable|array',
+            'tags.*'       => 'exists:tags,id',
         ]);
 
         $item = MenuItem::where('id', $id)
@@ -119,6 +164,9 @@ class MenuListController extends Controller
             'base_price',
             'is_available',
         ]));
+
+        $item->addons()->sync($request->addons ?? []);
+        $item->tags()->sync($request->tags ?? []);
 
         return redirect()
             ->route('menuItems')

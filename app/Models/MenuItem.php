@@ -32,4 +32,13 @@ class MenuItem extends Model
             'item_addons'
         );
     }
+
+    public function tags()
+    {
+        return $this->belongsToMany(
+            Tag::class,
+            'menu_item_tags'
+        );
+    }
+
 }

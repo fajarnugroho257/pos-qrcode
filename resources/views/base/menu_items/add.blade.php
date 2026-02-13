@@ -1,5 +1,16 @@
 @extends('layouts.app')
 
+@push('styles')
+<style>
+.select2-container--default .select2-selection--multiple {
+    border-radius: 0.75rem;
+    border-color: #e5e7eb;
+    min-height: 46px;
+    padding: 6px;
+}
+</style>
+@endpush
+
 @section('content')
 <div>
     <main class="max-w-7xl mx-auto py-8 px-4">
@@ -61,6 +72,39 @@
                                     <option value="{{ $category->id }}"
                                         {{ old('category_id') == $category->id ? 'selected' : '' }}>
                                         {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        {{-- Addon --}}
+                        <div class="space-y-2 md:col-span-2">
+                            <label class="block text-sm font-semibold text-gray-700">
+                                Addon
+                            </label>
+                            <select name="addons[]"
+                                    multiple
+                                    class="select2 w-full px-4 py-3 border border-gray-200 rounded-xl text-sm">
+                                @foreach ($addons as $addon)
+                                    <option value="{{ $addon->id }}"
+                                        {{ collect(old('addons'))->contains($addon->id) ? 'selected' : '' }}>
+                                        {{ $addon->name }} (Rp {{ number_format($addon->price) }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- Tag --}}
+                        <div class="space-y-2 md:col-span-2">
+                            <label class="block text-sm font-semibold text-gray-700">
+                                Tag
+                            </label>
+                            <select name="tags[]"
+                                    multiple
+                                    class="select2 w-full px-4 py-3 border border-gray-200 rounded-xl text-sm">
+                                @foreach ($tags as $tag)
+                                    <option value="{{ $tag->id }}"
+                                        {{ collect(old('tags'))->contains($tag->id) ? 'selected' : '' }}>
+                                        {{ $tag->name }}
                                     </option>
                                 @endforeach
                             </select>
@@ -130,3 +174,16 @@
     </main>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function () {
+    $('.select2').select2({
+        placeholder: 'Pilih',
+        allowClear: true,
+        width: '100%'
+    });
+});
+</script>
+@endpush
+
