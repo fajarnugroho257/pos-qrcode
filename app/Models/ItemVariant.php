@@ -9,7 +9,7 @@ class ItemVariant extends Model
     protected $fillable = [
         'menu_item_id',
         'name',
-        'price',
+        'price_modifier',
     ];
 
     public function menuItem()

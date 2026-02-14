@@ -166,7 +166,7 @@
 
 
                         {{-- Status --}}
-                        <div class="space-y-2">
+                        <div class="space-y-2 md:col-span-2">
                             <label class="block text-sm font-semibold text-gray-700">
                                 Status
                             </label>
@@ -183,6 +183,60 @@
                                 </option>
                             </select>
                         </div>
+                        
+                        <div id="variant-wrapper" class="space-y-2">
+
+                            {{-- PRIORITAS old() --}}
+                            @if (old('variants'))
+                                @foreach (old('variants') as $i => $variant)
+                                    <div class="flex gap-3 items-center variant-row">
+                                        <input type="text"
+                                            name="variants[{{ $i }}][name]"
+                                            value="{{ $variant['name'] }}"
+                                            class="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-sm">
+
+                                        <input type="number"
+                                            name="variants[{{ $i }}][price]"
+                                            value="{{ $variant['price'] }}"
+                                            class="w-40 px-4 py-3 border border-gray-200 rounded-xl text-sm">
+
+                                        <button type="button"
+                                                class="remove-variant text-red-500 hover:text-red-700 text-sm">
+                                            ✕
+                                        </button>
+                                    </div>
+                                @endforeach
+
+                            {{-- PRELOAD DARI DATABASE --}}
+                            @else
+                                @foreach ($menuItem->variants as $i => $variant)
+                                    <div class="flex gap-3 items-center variant-row">
+                                        <input type="text"
+                                            name="variants[{{ $i }}][name]"
+                                            value="{{ $variant->name }}"
+                                            class="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-sm">
+
+                                        <input type="number"
+                                            name="variants[{{ $i }}][price]"
+                                            value="{{ $variant->price_modifier }}"
+                                            class="w-40 px-4 py-3 border border-gray-200 rounded-xl text-sm">
+
+                                        <button type="button"
+                                                class="remove-variant text-red-500 hover:text-red-700 text-sm">
+                                            ✕
+                                        </button>
+                                    </div>
+                                @endforeach
+                            @endif
+
+                            <button type="button"
+                                    id="add-variant"
+                                    class="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-800">
+                                + Tambah Variant
+                            </button>
+
+                        </div>
+
 
                     </div>
                 </div>
@@ -212,6 +266,41 @@ $(document).ready(function () {
         placeholder: 'Pilih',
         allowClear: true,
         width: '100%'
+    });
+
+    let variantIndex =
+    {{ old('variants')
+        ? count(old('variants'))
+        : $menuItem->variants->count() }};
+
+
+    $('#add-variant').on('click', function () {
+        let html = `
+            <div class="flex gap-3 items-center variant-row">
+                <input type="text"
+                       name="variants[${variantIndex}][name]"
+                       placeholder="Nama Variant (misal: Large)"
+                       class="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-sm">
+
+                <input type="number"
+                       name="variants[${variantIndex}][price]"
+                       min="0"
+                       placeholder="Harga"
+                       class="w-80 px-4 py-3 border border-gray-200 rounded-xl text-sm">
+
+                <button type="button"
+                        class="remove-variant text-red-500 hover:text-red-700 text-sm">
+                    ✕
+                </button>
+            </div>
+        `;
+
+        $('#variant-wrapper').append(html);
+        variantIndex++;
+    });
+
+    $(document).on('click', '.remove-variant', function () {
+        $(this).closest('.variant-row').remove();
     });
 });
 </script>

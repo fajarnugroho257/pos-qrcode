@@ -10,6 +10,7 @@ use App\Models\Tag;
 use App\Models\MenuItemTag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 
 class MenuListController extends Controller
@@ -65,35 +66,67 @@ class MenuListController extends Controller
             'price'       => 'required|numeric|min:0',
             'is_active'   => 'required|boolean',
             'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'addons'      => 'nullable|array',
-            'addons.*'    => 'exists:addons,id',
-            'tags'        => 'nullable|array',
-            'tags.*'      => 'exists:tags,id',
+
+            // variants
+            'variants'              => 'nullable|array',
+            'variants.*.name'       => 'required_with:variants|string|max:50',
+            'variants.*.price'      => 'required_with:variants|numeric|min:0',
+
+            // addon & tag
+            'addons' => 'nullable|array',
+            'addons.*' => 'exists:addons,id',
+            'tags'   => 'nullable|array',
+            'tags.*' => 'exists:tags,id',
         ]);
 
-        $imagePath = null;
+        DB::transaction(function () use ($request) {
 
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')
-                ->store('menu-items', 'public');
-        }
+            // upload image
+            $imagePath = null;
+            if ($request->hasFile('image')) {
+                $imagePath = $request->file('image')
+                    ->store('menu-items', 'public');
+            }
 
-        $item = MenuItem::create([
-            'restaurant_id' => auth()->user()->activeRestaurant()->id,
-            'category_id'   => $request->category_id,
-            'name'          => $request->name,
-            'base_price'         => $request->price,
-            'is_available'     => $request->is_active,
-            'image_url'     => $imagePath,
-        ]);
+            // create menu
+            $menu = MenuItem::create([
+                'restaurant_id' => auth()->user()->activeRestaurant()->id,
+                'category_id'   => $request->category_id,
+                'name'          => $request->name,
+                'base_price'    => $request->price,
+                'is_available'  => $request->is_active,
+                'image_url'     => $imagePath,
+            ]);
 
-        if ($request->filled('addons')) {
-            $item->addons()->sync($request->addons);
-        }
+            // =========================
+            // SAVE VARIANTS
+            // =========================
+            if ($request->filled('variants')) {
+                foreach ($request->variants as $variant) {
+                    if (!empty($variant['name'])) {
+                        $menu->variants()->create([
+                            'name'  => $variant['name'],
+                            'price_modifier' => $variant['price'] ?? 0,
+                        ]);
+                    }
+                }
+            }
 
-        if ($request->filled('tags')) {
-            $item->tags()->sync($request->tags);
-        }
+            // =========================
+            // SYNC ADDONS
+            // =========================
+            if ($request->filled('addons')) {
+                $menu->addons()->sync($request->addons);
+            }
+
+            // =========================
+            // SYNC TAGS
+            // =========================
+            if ($request->filled('tags')) {
+                $menu->tags()->sync($request->tags);
+            }
+
+        });
 
         return redirect()
             ->route('menuItems')
@@ -104,7 +137,7 @@ class MenuListController extends Controller
     {
         $restaurantId = auth()->user()->activeRestaurant()->id;
 
-        $menuItem = MenuItem::with(['addons', 'tags']) // ⬅️ WAJIB
+        $menuItem = MenuItem::with(['variants', 'addons', 'tags'])
             ->where('id', $id)
             ->where('restaurant_id', $restaurantId)
             ->firstOrFail();
@@ -144,29 +177,66 @@ class MenuListController extends Controller
 
             'tags'         => 'nullable|array',
             'tags.*'       => 'exists:tags,id',
+
+            'variants'            => 'nullable|array',
+            'variants.*.name'     => 'required_with:variants|string|max:100',
+            'variants.*.price'    => 'required_with:variants|numeric|min:0',
         ]);
 
-        $item = MenuItem::where('id', $id)
-            ->where('restaurant_id', auth()->user()->activeRestaurant()->id)
-            ->firstOrFail();
+        DB::transaction(function () use ($request, $id) {
+
+            $menuItem = MenuItem::with('variants')->findOrFail($id);
+
+            /* =====================
+            * UPDATE MENU ITEM
+            * ===================== */
+            $data = [
+                'name'        => $request->name,
+                'category_id' => $request->category_id,
+                'base_price'       => $request->base_price,
+                'is_available'   => $request->is_available,
+            ];
+
+            /* IMAGE */
             if ($request->hasFile('image')) {
-            // delete old image
-                if ($item->image_url && Storage::disk('public')->exists($item->image_url)) {
-                        Storage::disk('public')->delete($item->image_url);
-                    }
-                $item->image_url = $request->file('image')
+                if ($menuItem->image_url && Storage::disk('public')->exists($menuItem->image_url)) {
+                    Storage::disk('public')->delete($menuItem->image_url);
+                }
+
+                $data['image_url'] = $request->file('image')
                     ->store('menu-items', 'public');
             }
 
-        $item->update($request->only([
-            'category_id',
-            'name',
-            'base_price',
-            'is_available',
-        ]));
+            $menuItem->update($data);
 
-        $item->addons()->sync($request->addons ?? []);
-        $item->tags()->sync($request->tags ?? []);
+            /* =====================
+            * SYNC VARIANTS (KEY PART)
+            * ===================== */
+
+            // 1. hapus semua variant lama
+            $menuItem->variants()->delete();
+
+            // 2. simpan ulang variant baru (jika ada)
+            if ($request->filled('variants')) {
+                foreach ($request->variants as $variant) {
+                    // skip baris kosong (safety)
+                    if (empty($variant['name'])) {
+                        continue;
+                    }
+
+                    $menuItem->variants()->create([
+                        'name'  => $variant['name'],
+                        'price_modifier' => $variant['price'],
+                    ]);
+                }
+            }
+
+            /* =====================
+            * SYNC ADDON & TAG
+            * ===================== */
+            $menuItem->addons()->sync($request->addons ?? []);
+            $menuItem->tags()->sync($request->tags ?? []);
+        });
 
         return redirect()
             ->route('menuItems')
