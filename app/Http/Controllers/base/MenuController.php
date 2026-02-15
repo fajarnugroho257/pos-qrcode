@@ -36,7 +36,7 @@ class MenuController extends Controller
         // 
         $data['title'] = "Management Menu Aplikasi";
         $data['desc'] = "Tambah Menu Aplikasi";
-        return view('base.menu.add', $data);
+        return view('base.menu.add_menu', $data);
     }
 
     /**

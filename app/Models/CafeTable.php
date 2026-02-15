@@ -8,7 +8,11 @@ class CafeTable extends Model
 {
     protected $fillable = [
         'restaurant_id',
-        'name',
+        'table_number',
         'capacity',
+        'status',
+        'location',
+        'qr_image',
+        'is_active',
     ];
 }

@@ -10,6 +10,8 @@ use App\Http\Controllers\base\MenuAddonsController;
 use App\Http\Controllers\base\MenuTagsController;
 use App\Http\Controllers\base\MenuListController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Master\CafeTableController;
+use App\Http\Controllers\OrderPesananController;
 use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +27,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['guest'])->group(function () {
     Route::get('/', [LoginController::class, 'index'])->name('login');
     Route::post('/login-process', [LoginController::class, 'loginProcess'])->name('loginProcess');
+    Route::get('/order', [OrderPesananController::class, 'index']);
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -150,6 +153,19 @@ Route::middleware(['auth'])->group(function () {
 
     });
     
+    // data meja
+    Route::middleware(['checkMenu:cafeTables'])->group(function () {
+        Route::get('/cafe-tables', [CafeTableController::class, 'index'])->name('cafeTables');
+        Route::get('/cafe-tables/create', [CafeTableController::class, 'create'])->name('cafeTablesCreate');
+        Route::post('/cafe-tables', [CafeTableController::class, 'store'])->name('cafeTablesStore');
+        Route::get('/cafe-tables/show/{id}', [CafeTableController::class, 'show'])->name('cafeTablesShow');
+        Route::get('/cafe-tables/edit/{id}', [CafeTableController::class, 'edit'])->name('cafeTablesEdit');
+        Route::put('/cafe-tables/update/{id}', [CafeTableController::class, 'update'])->name('cafeTablesUpdate');
+        Route::delete('/cafe-tables/delete/{id}', [CafeTableController::class, 'destroy'])->name('cafeTablesDelete');
+        Route::get('/cafe-tables/download/{id}', [CafeTableController::class, 'download'])->name('cafeTablesDownload');
+        
+    });
+
     Route::post('/keluar', [LoginController::class, 'logOut'])->name('logOut');
     Route::get('/log-out', [LoginController::class, 'logOut'])->name('log-out');
     

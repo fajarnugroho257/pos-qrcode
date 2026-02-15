@@ -3,7 +3,7 @@
         @foreach($menus as $menu)
             <div class="relative group dropdown-root">
                 @if($menu->children->isEmpty())
-                    <a href="{{ url($menu->menu_url) }}" class="px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md flex items-center gap-2">
+                    <a href="{{ route($menu->menu_url) }}" class="px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md flex items-center gap-2">
                         <i class="{{ $menu->menu_icon }}"></i> {{ $menu->menu_name }}
                     </a>
                 @else
