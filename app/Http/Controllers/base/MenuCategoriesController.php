@@ -82,7 +82,7 @@ class MenuCategoriesController extends Controller
 
         return view('base.menu_categories.edit', [
             'title'    => 'Edit Kategori',
-            'desc'     => 'Ubah data kategori menu restoran',
+'desc'     => 'Ubah data kategori menu restoran',
             'category' => $category,
         ]);
     }
