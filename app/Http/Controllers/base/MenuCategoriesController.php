@@ -128,7 +128,7 @@ class MenuCategoriesController extends Controller
     {
         $user = auth()->user();
 
-        // Ambil restaurant aktif user (sesuai relasi kamu)
+        // Ambil restaurant aktif user (sesuai relasi kamu) test
         $restaurant = auth()->user()->activeRestaurant()->id;
 
         if (! $restaurant) {
