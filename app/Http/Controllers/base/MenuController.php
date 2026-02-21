@@ -13,10 +13,11 @@ class MenuController extends Controller
      */
     public function index(Request $request)
     {
-        $data['title'] = "Management Menu Aplikasi";
-        $data['desc'] = "Data Menu Aplikasi";
-        $search = $request->query('search'); 
+        $data['title'] = 'Management Menu Aplikasi';
+        $data['desc'] = 'Data Menu Aplikasi';
+        $search = $request->query('search');
         $data['rs_menu'] = Menu::with('children')->where('menu_name', 'LIKE', "%{$search}%")->where('menu_parent', '0')->orderBy('menu_level')->get();
+
         return view('base.menu.index', $data);
     }
 
@@ -27,15 +28,16 @@ class MenuController extends Controller
     {
         // select option
         $allMenus = Menu::with('children')->where('menu_parent', '0')->get();
-        $rs_option[] = ["id" => "0", "name" => "Root"];
+        $rs_option[] = ['id' => '0', 'name' => 'Root'];
         foreach ($allMenus as $menu) {
             $rs_option[] = ['id' => $menu->menu_id, 'name' => $menu->menu_name];
             $this->formatOptions($menu->children, 1, $rs_option);
         }
         $data['rs_option'] = $rs_option;
-        // 
-        $data['title'] = "Management Menu Aplikasi";
-        $data['desc'] = "Tambah Menu Aplikasi";
+        //
+        $data['title'] = 'Management Menu Aplikasi';
+        $data['desc'] = 'Tambah Menu Aplikasi';
+
         return view('base.menu.add_menu', $data);
     }
 
@@ -52,7 +54,7 @@ class MenuController extends Controller
             'menu_parent' => 'required',
         ]);
         $level = 1; // Default jika root
-        if ($request->menu_parent !== "0") {
+        if ($request->menu_parent !== '0') {
             $parent = Menu::find($request->menu_parent);
             $level = $parent->menu_level + 1;
         }
@@ -68,19 +70,22 @@ class MenuController extends Controller
                 'menu_parent' => $request->menu_parent,
             ]);
         }
-        //redirect
+
+        // redirect
         return redirect()->route('menuAppAdd')->with('success', 'Data berhasil disimpan');
     }
 
-    function last_menu_id() {
+    public function last_menu_id()
+    {
         // get last data
         $last_data = Menu::select('menu_id')->orderBy('menu_id', 'DESC')->first();
         $last_number = substr($last_data->menu_id, 1, 6) + 1;
         $zero = '';
-        for ($i=strlen($last_number); $i <=3; $i++) {
+        for ($i = strlen($last_number); $i <= 3; $i++) {
             $zero .= '0';
         }
-        $new_id = 'M'.$zero.$last_number;
+        $new_id = 'M' . $zero . $last_number;
+
         //
         return $new_id;
     }
@@ -105,15 +110,16 @@ class MenuController extends Controller
         $data['detail'] = $detail;
         // select option
         $allMenus = Menu::with('children')->where('menu_parent', '0')->get();
-        $rs_option[] = ["id" => "0", "name" => "Root"];
+        $rs_option[] = ['id' => '0', 'name' => 'Root'];
         foreach ($allMenus as $menu) {
             $rs_option[] = ['id' => $menu->menu_id, 'name' => $menu->menu_name];
             $this->formatOptions($menu->children, 1, $rs_option);
         }
         $data['rs_option'] = $rs_option;
-        // 
-        $data['title'] = "Management Menu Aplikasi";
-        $data['desc'] = "Ubah Menu Aplikasi";
+        //
+        $data['title'] = 'Management Menu Aplikasi';
+        $data['desc'] = 'Ubah Menu Aplikasi';
+
         // dd($data);
         return view('base.menu.edit', $data);
     }
@@ -122,10 +128,10 @@ class MenuController extends Controller
     {
         foreach ($children as $child) {
             // Menambahkan simbol "--" sebagai penanda level/kedalaman
-            $prefix = str_repeat('-- ', $level); 
+            $prefix = str_repeat('-- ', $level);
             $options[] = ['id' => $child->menu_id, 'name' => $prefix . $child->menu_name];
             // $options[$child->menu_id] = $prefix . $child->menu_name;
-            
+
             if ($child->children->isNotEmpty()) {
                 $this->formatOptions($child->children, $level + 1, $options);
             }
@@ -160,8 +166,9 @@ class MenuController extends Controller
             'menu_st' => $request->menu_st,
             'menu_level' => $level,
             'menu_url' => $request->menu_url,
-            'menu_parent' => $request->menu_parent == '0' ? "0" : $request->menu_parent,
+            'menu_parent' => $request->menu_parent == '0' ? '0' : $request->menu_parent,
         ]);
+
         return redirect()->route('menuAppEdit', [$menu_id])->with('success', 'Data berhasil diupdate');
     }
 

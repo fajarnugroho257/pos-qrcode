@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('menu_id', 5);
             $table->string('role_id', 5);
             // uniq
-            $table->unique(array('menu_id', 'role_id'));
+            $table->unique(['menu_id', 'role_id']);
             $table->timestamps();
             // foreign key
             $table->foreign('menu_id')->references('menu_id')->on('app_menu')->onUpdate('cascade')->onDelete('cascade');

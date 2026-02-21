@@ -4,14 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Heading;
 
 class Menu extends Model
 {
     use HasFactory;
+
     public $incrementing = false;
+
     protected $table = 'app_menu';
+
     protected $primaryKey = 'menu_id';
+
     protected $fillable = ['menu_id', 'menu_name', 'menu_icon', 'menu_st', 'menu_level', 'menu_url', 'menu_parent'];
 
     public function children()

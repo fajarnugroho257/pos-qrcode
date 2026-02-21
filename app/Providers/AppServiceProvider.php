@@ -2,13 +2,12 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use App\Services\MenuService;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\View;
-use App\Services\MenuService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,11 +29,11 @@ class AppServiceProvider extends ServiceProvider
         view()->composer('*', function ($view) {
             if (auth()->check()) {
                 $roleId = auth()->user()->role_id;
-                $cacheKey = "sidebar_menu_" . $roleId;
-                
+                $cacheKey = 'sidebar_menu_' . $roleId;
+
                 $menus = Cache::remember($cacheKey, now()->addDay(), function () use ($roleId) {
                     // Ambil data berdasarkan tabel app_role_menu anda
-                    $allMenus = \App\Models\Menu::whereHas('roles', function($q) use ($roleId) {
+                    $allMenus = \App\Models\Menu::whereHas('roles', function ($q) use ($roleId) {
                         $q->where('app_role_menu.role_id', $roleId);
                     })->orderBy('menu_id', 'asc')->get();
 
@@ -43,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
 
                 $view->with('menus', $menus);
                 // nama pengguna
-                $cacheName = "pengguna";
+                $cacheName = 'pengguna';
                 $pengguna = Cache::remember($cacheName, now()->addDay(), function () {
                     return auth()->user()->name;
                 });
@@ -54,10 +53,10 @@ class AppServiceProvider extends ServiceProvider
         // DB::listen(function ($query) {
         //     // Query SQL
         //     $sql = $query->sql;
-            
+
         //     // Bindings (parameter)
         //     $bindings = $query->bindings;
-            
+
         //     // Waktu eksekusi (ms)
         //     $time = $query->time;
 

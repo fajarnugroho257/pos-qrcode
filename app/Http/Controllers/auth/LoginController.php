@@ -33,6 +33,7 @@ class LoginController extends Controller
 
             return redirect()->route('dashboard');
         }
+
         return redirect()->route('login')->with('error', 'Data tidak ditemukan');
     }
 
@@ -40,11 +41,11 @@ class LoginController extends Controller
     {
         $roleId = auth()->user()->role_id;
         Cache::forget("sidebar_menu_{$roleId}");
-        Cache::forget("pengguna");
+        Cache::forget('pengguna');
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect('/');
     }
-
 }

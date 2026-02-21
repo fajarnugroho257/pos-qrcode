@@ -13,14 +13,15 @@ class RoleController extends Controller
      */
     public function index(Request $request)
     {
-        $data['title'] = "Management Role Aplikasi";
-        $data['desc'] = "Data Role Aplikasi";
-        // 
+        $data['title'] = 'Management Role Aplikasi';
+        $data['desc'] = 'Data Role Aplikasi';
+        //
         $query = Role::query();
         if ($request->filled('search')) {
             $query->where('role_name', 'LIKE', "%{$request->search}%");
         }
         $data['rs_role'] = $query->paginate(10)->withQueryString();
+
         return view('base.role.index', $data);
     }
 
@@ -29,8 +30,9 @@ class RoleController extends Controller
      */
     public function create()
     {
-        $data['title'] = "Management Role Aplikasi";
-        $data['desc'] = "Tambah Role Aplikasi";
+        $data['title'] = 'Management Role Aplikasi';
+        $data['desc'] = 'Tambah Role Aplikasi';
+
         return view('base.role.add', $data);
     }
 
@@ -49,19 +51,22 @@ class RoleController extends Controller
                 'role_name' => $request->role_name,
             ]);
         }
-        //redirect
+
+        // redirect
         return redirect()->route('rolePenggunaAdd')->with('success', 'Data berhasil disimpan');
     }
 
-    function last_role_id() {
+    public function last_role_id()
+    {
         // get last data
         $last_data = Role::select('role_id')->orderBy('role_id', 'DESC')->first();
         $last_number = substr($last_data->role_id, 1, 6) + 1;
         $zero = '';
-        for ($i=strlen($last_number); $i <=3; $i++) {
+        for ($i = strlen($last_number); $i <= 3; $i++) {
             $zero .= '0';
         }
-        $new_id = 'R'.$zero.$last_number;
+        $new_id = 'R' . $zero . $last_number;
+
         //
         return $new_id;
     }
@@ -85,8 +90,9 @@ class RoleController extends Controller
             return redirect()->route('rolePengguna')->with('error', 'Data tidak ditemukan');
         }
         $data['detail'] = $detail;
-        $data['title'] = "Management Role Aplikasi";
-        $data['desc'] = "Ubah Role Aplikasi";
+        $data['title'] = 'Management Role Aplikasi';
+        $data['desc'] = 'Ubah Role Aplikasi';
+
         // dd($data);
         return view('base.role.edit', $data);
 
@@ -102,9 +108,10 @@ class RoleController extends Controller
         if (empty($detail)) {
             return redirect()->route('rolePengguna')->with('error', 'Data tidak ditemukan');
         }
-         Role::where('role_id', $request->role_id)->update([
+        Role::where('role_id', $request->role_id)->update([
             'role_name' => $request->role_name,
         ]);
+
         return redirect()->route('rolePenggunaEdit', [$role_id])->with('success', 'Data berhasil diupdate');
     }
 

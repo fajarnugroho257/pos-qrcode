@@ -3,15 +3,13 @@
 namespace App\Http\Controllers\base;
 
 use App\Http\Controllers\Controller;
-use App\Models\MenuItem;
-use App\Models\Category;
 use App\Models\Addon;
+use App\Models\Category;
+use App\Models\MenuItem;
 use App\Models\Tag;
-use App\Models\MenuItemTag;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Storage;
 
 class MenuListController extends Controller
 {
@@ -38,17 +36,17 @@ class MenuListController extends Controller
     {
         $categories = Category::where(
             'restaurant_id',
-            auth()->user()->activeRestaurant()->id
+            auth()->user()->activeRestaurant()->id,
         )->get();
 
         $addons = Addon::where(
             'restaurant_id',
-            auth()->user()->activeRestaurant()->id
+            auth()->user()->activeRestaurant()->id,
         )->get();
 
         $tags = Tag::where(
             'restaurant_id',
-            auth()->user()->activeRestaurant()->id
+            auth()->user()->activeRestaurant()->id,
         )->get();
 
         return view('base.menu_items.add', [
@@ -62,20 +60,20 @@ class MenuListController extends Controller
     {
         $request->validate([
             'category_id' => 'required|exists:categories,id',
-            'name'        => 'required|string|max:100',
-            'price'       => 'required|numeric|min:0',
-            'is_active'   => 'required|boolean',
-            'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'name' => 'required|string|max:100',
+            'price' => 'required|numeric|min:0',
+            'is_active' => 'required|boolean',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
 
             // variants
-            'variants'              => 'nullable|array',
-            'variants.*.name'       => 'required_with:variants|string|max:50',
-            'variants.*.price'      => 'required_with:variants|numeric|min:0',
+            'variants' => 'nullable|array',
+            'variants.*.name' => 'required_with:variants|string|max:50',
+            'variants.*.price' => 'required_with:variants|numeric|min:0',
 
             // addon & tag
             'addons' => 'nullable|array',
             'addons.*' => 'exists:addons,id',
-            'tags'   => 'nullable|array',
+            'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
         ]);
 
@@ -91,11 +89,11 @@ class MenuListController extends Controller
             // create menu
             $menu = MenuItem::create([
                 'restaurant_id' => auth()->user()->activeRestaurant()->id,
-                'category_id'   => $request->category_id,
-                'name'          => $request->name,
-                'base_price'    => $request->price,
-                'is_available'  => $request->is_active,
-                'image_url'     => $imagePath,
+                'category_id' => $request->category_id,
+                'name' => $request->name,
+                'base_price' => $request->price,
+                'is_available' => $request->is_active,
+                'image_url' => $imagePath,
             ]);
 
             // =========================
@@ -103,9 +101,9 @@ class MenuListController extends Controller
             // =========================
             if ($request->filled('variants')) {
                 foreach ($request->variants as $variant) {
-                    if (!empty($variant['name'])) {
+                    if (! empty($variant['name'])) {
                         $menu->variants()->create([
-                            'name'  => $variant['name'],
+                            'name' => $variant['name'],
                             'price_modifier' => $variant['price'] ?? 0,
                         ]);
                     }
@@ -153,34 +151,33 @@ class MenuListController extends Controller
             ->get();
 
         return view('base.menu_items.edit', [
-            'title'      => 'Edit Menu',
-            'desc'       => 'Ubah data menu restoran',
-            'menuItem'   => $menuItem,
+            'title' => 'Edit Menu',
+            'desc' => 'Ubah data menu restoran',
+            'menuItem' => $menuItem,
             'categories' => $categories,
-            'addons'     => $addons,
-            'tags'       => $tags,
+            'addons' => $addons,
+            'tags' => $tags,
         ]);
     }
-
 
     public function update(Request $request, $id)
     {
         $request->validate([
             'category_id' => 'required|exists:categories,id',
-            'name'        => 'required|string|max:100',
-            'base_price'       => 'required|numeric|min:0',
-            'is_available'   => 'required|boolean',
-            'image'        => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'name' => 'required|string|max:100',
+            'base_price' => 'required|numeric|min:0',
+            'is_available' => 'required|boolean',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             // ⬇️ VALIDASI RELASI
-            'addons'       => 'nullable|array',
-            'addons.*'     => 'exists:addons,id',
+            'addons' => 'nullable|array',
+            'addons.*' => 'exists:addons,id',
 
-            'tags'         => 'nullable|array',
-            'tags.*'       => 'exists:tags,id',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tags,id',
 
-            'variants'            => 'nullable|array',
-            'variants.*.name'     => 'required_with:variants|string|max:100',
-            'variants.*.price'    => 'required_with:variants|numeric|min:0',
+            'variants' => 'nullable|array',
+            'variants.*.name' => 'required_with:variants|string|max:100',
+            'variants.*.price' => 'required_with:variants|numeric|min:0',
         ]);
 
         DB::transaction(function () use ($request, $id) {
@@ -191,10 +188,10 @@ class MenuListController extends Controller
             * UPDATE MENU ITEM
             * ===================== */
             $data = [
-                'name'        => $request->name,
+                'name' => $request->name,
                 'category_id' => $request->category_id,
-                'base_price'       => $request->base_price,
-                'is_available'   => $request->is_available,
+                'base_price' => $request->base_price,
+                'is_available' => $request->is_available,
             ];
 
             /* IMAGE */
@@ -225,7 +222,7 @@ class MenuListController extends Controller
                     }
 
                     $menuItem->variants()->create([
-                        'name'  => $variant['name'],
+                        'name' => $variant['name'],
                         'price_modifier' => $variant['price'],
                     ]);
                 }

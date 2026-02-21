@@ -2,17 +2,18 @@
 
 use App\Http\Controllers\auth\LoginController;
 use App\Http\Controllers\base\DataUserController;
+use App\Http\Controllers\base\MenuAddonsController;
+use App\Http\Controllers\base\MenuCategoriesController;
 use App\Http\Controllers\base\MenuController;
+use App\Http\Controllers\base\MenuListController;
+use App\Http\Controllers\base\MenuTagsController;
 use App\Http\Controllers\base\RoleController;
 use App\Http\Controllers\base\RolemenuController;
-use App\Http\Controllers\base\MenuCategoriesController;
-use App\Http\Controllers\base\MenuAddonsController;
-use App\Http\Controllers\base\MenuTagsController;
-use App\Http\Controllers\base\MenuListController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Master\CafeTableController;
 use App\Http\Controllers\OrderPesananController;
 use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -35,7 +36,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['checkMenu:dashboard'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     });
-    // // Menu Aplikasi 
+    // // Menu Aplikasi
     Route::middleware(['checkMenu:menuApp'])->group(function () {
         Route::get('/menu-aplikasi', [MenuController::class, 'index'])->name('menuApp');
         Route::get('/add-menu-aplikasi', [MenuController::class, 'create'])->name('menuAppAdd');
@@ -82,13 +83,13 @@ Route::middleware(['auth'])->group(function () {
             ->name('menuCategoriesStore');
 
         Route::delete('/menu/categories/{id}', [MenuCategoriesController::class, 'destroy'])
-        ->name('menuCategoriesDelete');
-        
+            ->name('menuCategoriesDelete');
+
         Route::get('/menu/categories/{id}', [MenuCategoriesController::class, 'edit'])
             ->name('menuCategoriesEdit');
 
         Route::put('/menu/categories/{id}', [MenuCategoriesController::class, 'update'])
-        ->name('menuCategoriesUpdate');
+            ->name('menuCategoriesUpdate');
 
         // Addons
         Route::get('/menu/addons', [MenuAddonsController::class, 'index'])
@@ -128,7 +129,6 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/menu/tags/{id}', [MenuTagsController::class, 'destroy'])
             ->name('menuTagsDelete');
 
-
         // Menu Items
         Route::get('/menu/items', [MenuListController::class, 'index'])
             ->name('menuItems');
@@ -148,11 +148,8 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/menu/items/{id}', [MenuListController::class, 'destroy'])
             ->name('menuItemsDelete');
 
-
-
-
     });
-    
+
     // data meja
     Route::middleware(['checkMenu:cafeTables'])->group(function () {
         Route::get('/cafe-tables', [CafeTableController::class, 'index'])->name('cafeTables');
@@ -163,15 +160,13 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/cafe-tables/update/{id}', [CafeTableController::class, 'update'])->name('cafeTablesUpdate');
         Route::delete('/cafe-tables/delete/{id}', [CafeTableController::class, 'destroy'])->name('cafeTablesDelete');
         Route::get('/cafe-tables/download/{id}', [CafeTableController::class, 'download'])->name('cafeTablesDownload');
-        
+
     });
 
     Route::post('/keluar', [LoginController::class, 'logOut'])->name('logOut');
     Route::get('/log-out', [LoginController::class, 'logOut'])->name('log-out');
-    
+
     /* YOUR ROUTE APLICATION */
 
     /* END YOUR ROUTE APLICATION */
 });
-
-

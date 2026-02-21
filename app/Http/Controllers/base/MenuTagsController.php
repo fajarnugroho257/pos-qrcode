@@ -4,8 +4,8 @@ namespace App\Http\Controllers\base;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tag;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 class MenuTagsController extends Controller
 {
@@ -22,8 +22,8 @@ class MenuTagsController extends Controller
 
         return view('base.menu_tags.index', [
             'title' => 'Tag Menu',
-            'desc'  => 'Daftar tag menu restoran',
-            'tags'  => $tags,
+            'desc' => 'Daftar tag menu restoran',
+            'tags' => $tags,
         ]);
     }
 
@@ -31,7 +31,7 @@ class MenuTagsController extends Controller
     {
         return view('base.menu_tags.add', [
             'title' => 'Tambah Tag',
-            'desc'  => 'Tambah tag menu restoran',
+            'desc' => 'Tambah tag menu restoran',
         ]);
     }
 
@@ -43,7 +43,7 @@ class MenuTagsController extends Controller
 
         Tag::create([
             'restaurant_id' => auth()->user()->activeRestaurant()->id,
-            'name'          => $request->name,
+            'name' => $request->name,
         ]);
 
         return redirect()
@@ -58,8 +58,8 @@ class MenuTagsController extends Controller
 
         return view('base.menu_tags.edit', [
             'title' => 'Edit Tag',
-            'desc'  => 'Ubah data tag menu',
-            'tag'   => $tag,
+            'desc' => 'Ubah data tag menu',
+            'tag' => $tag,
         ]);
     }
 

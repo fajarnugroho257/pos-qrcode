@@ -25,7 +25,7 @@ class Restaurant extends Model
             User::class,
             'restaurant_user',
             'restaurant_id',
-            'user_id'
+            'user_id',
         );
     }
 

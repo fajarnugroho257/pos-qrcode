@@ -12,8 +12,8 @@ class OrderPesananController extends Controller
     public function index()
     {
         return view('public.index', [
-            'title'  => 'Addon Menu',
-            'desc'   => 'Daftar addon menu restoran',
+            'title' => 'Addon Menu',
+            'desc' => 'Daftar addon menu restoran',
         ]);
     }
 

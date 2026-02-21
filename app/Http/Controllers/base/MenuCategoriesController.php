@@ -3,12 +3,9 @@
 namespace App\Http\Controllers\base;
 
 use App\Http\Controllers\Controller;
-use App\Models\Menu;
-use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
 use App\Models\Category;
-
-
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 class MenuCategoriesController extends Controller
 {
@@ -33,7 +30,6 @@ class MenuCategoriesController extends Controller
             'categories' => $categories,
         ]);
     }
-
 
     /**
      * Show the form for creating a new resource.
@@ -63,7 +59,6 @@ class MenuCategoriesController extends Controller
             ->with('success', 'Kategori berhasil ditambahkan');
     }
 
-
     /**
      * Display the specified resource.
      */
@@ -81,12 +76,11 @@ class MenuCategoriesController extends Controller
         $category = Category::query()->where('restaurant_id', $restaurantId)->findOrFail($id);
 
         return view('base.menu_categories.edit', [
-            'title'    => 'Edit Kategori',
-'desc'     => 'Ubah data kategori menu restoran',
+            'title' => 'Edit Kategori',
+            'desc' => 'Ubah data kategori menu restoran',
             'category' => $category,
         ]);
     }
-
 
     /**
      * Update the specified resource in storage.
@@ -119,7 +113,6 @@ class MenuCategoriesController extends Controller
             ->route('menuCategories')
             ->with('success', 'Kategori berhasil diperbarui');
     }
-
 
     /**
      * Remove the specified resource from storage.

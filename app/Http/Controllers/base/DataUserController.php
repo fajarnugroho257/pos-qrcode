@@ -14,9 +14,9 @@ class DataUserController extends Controller
      */
     public function index(Request $request)
     {
-        $data['title'] = "Management User Pengguna Aplikasi";
-        $data['desc'] = "Data User Pengguna Aplikasi";
-        // 
+        $data['title'] = 'Management User Pengguna Aplikasi';
+        $data['desc'] = 'Data User Pengguna Aplikasi';
+        //
         $query = User::query();
         if ($request->filled('search')) {
             $query->where('name', 'LIKE', '%' . $request->search . '%');
@@ -24,6 +24,7 @@ class DataUserController extends Controller
         $rs_user = $query->paginate(50)->withQueryString();
         $data['rs_user'] = $rs_user;
         $data['rs_role'] = Role::all();
+
         return view('base.user.index', $data);
     }
 
@@ -32,9 +33,10 @@ class DataUserController extends Controller
      */
     public function create()
     {
-        $data['title'] = "Management User Pengguna Aplikasi";
-        $data['desc'] = "Tambah User Pengguna Aplikasi";
+        $data['title'] = 'Management User Pengguna Aplikasi';
+        $data['desc'] = 'Tambah User Pengguna Aplikasi';
         $data['rs_role'] = Role::all();
+
         return view('base.user.add', $data);
     }
 
@@ -48,7 +50,7 @@ class DataUserController extends Controller
             'password' => 'required|min:6',
             'name' => 'required',
             'role_id' => 'required',
-            'user_st' => 'required'
+            'user_st' => 'required',
         ]);
         User::create([
             'name' => $request->name,
@@ -57,7 +59,8 @@ class DataUserController extends Controller
             'user_st' => $request->user_st,
             'password' => bcrypt($request->password),
         ]);
-        //redirect
+
+        // redirect
         return redirect()->route('dataUserAdd')->with('success', 'Data berhasil disimpan');
     }
 
@@ -73,7 +76,7 @@ class DataUserController extends Controller
     //     //
     //     return $new_id;
     // }
-    
+
     /**
      * Display the specified resource.
      */
@@ -91,10 +94,11 @@ class DataUserController extends Controller
         if (empty($detail)) {
             return redirect()->route('dataUser')->with('error', 'Data tidak ditemukan');
         }
-        $data['title'] = "Management User Pengguna Aplikasi";
-        $data['desc'] = "Ubah User Pengguna Aplikasi";
+        $data['title'] = 'Management User Pengguna Aplikasi';
+        $data['desc'] = 'Ubah User Pengguna Aplikasi';
         $data['rs_role'] = Role::all();
         $data['detail'] = $detail;
+
         return view('base.user.edit', $data);
     }
 
@@ -108,7 +112,7 @@ class DataUserController extends Controller
             'password' => 'nullable|min:6',
             'name' => 'required',
             'role_id' => 'required',
-            'user_st' => 'required'
+            'user_st' => 'required',
         ]);
         $detail = User::find($id);
         if (empty($detail)) {
@@ -118,7 +122,7 @@ class DataUserController extends Controller
         $detail->username = $request->username;
         $detail->role_id = $request->role_id;
         $detail->user_st = $request->user_st;
-        if (!empty($request->password)) {
+        if (! empty($request->password)) {
             $detail->password = bcrypt($request->password);
         }
         if ($detail->save()) {

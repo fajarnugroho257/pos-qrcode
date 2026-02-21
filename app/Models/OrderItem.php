@@ -17,7 +17,7 @@ class OrderItem extends Model
     {
         return $this->belongsToMany(
             Addon::class,
-            'order_item_addons'
+            'order_item_addons',
         );
     }
 }

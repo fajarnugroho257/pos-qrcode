@@ -4,8 +4,8 @@ namespace App\Http\Controllers\base;
 
 use App\Http\Controllers\Controller;
 use App\Models\Addon;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 class MenuAddonsController extends Controller
 {
@@ -22,8 +22,8 @@ class MenuAddonsController extends Controller
             ->withQueryString();
 
         return view('base.menu_addons.index', [
-            'title'  => 'Addon Menu',
-            'desc'   => 'Daftar addon menu restoran',
+            'title' => 'Addon Menu',
+            'desc' => 'Daftar addon menu restoran',
             'addons' => $addons,
         ]);
     }
@@ -32,21 +32,21 @@ class MenuAddonsController extends Controller
     {
         return view('base.menu_addons.add', [
             'title' => 'Tambah Addon',
-            'desc'  => 'Addon menu restoran',
+            'desc' => 'Addon menu restoran',
         ]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name'  => 'required|string|max:100',
+            'name' => 'required|string|max:100',
             'price' => 'required|numeric|min:0',
         ]);
 
         Addon::create([
             'restaurant_id' => auth()->user()->activeRestaurant()->id,
-            'name'          => $request->name,
-            'price'         => $request->price,
+            'name' => $request->name,
+            'price' => $request->price,
         ]);
 
         return redirect()
@@ -64,7 +64,7 @@ class MenuAddonsController extends Controller
 
         return view('base.menu_addons.edit', [
             'title' => 'Edit Addon',
-            'desc'  => 'Ubah data addon menu',
+            'desc' => 'Ubah data addon menu',
             'addon' => $addon,
         ]);
     }
@@ -72,7 +72,7 @@ class MenuAddonsController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'name'  => 'required|string|max:100',
+            'name' => 'required|string|max:100',
             'price' => 'required|numeric|min:0',
         ]);
 
@@ -83,7 +83,7 @@ class MenuAddonsController extends Controller
             ->firstOrFail();
 
         $addon->update([
-            'name'  => $request->name,
+            'name' => $request->name,
             'price' => $request->price,
         ]);
 

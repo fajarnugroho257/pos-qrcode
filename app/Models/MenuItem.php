@@ -12,7 +12,7 @@ class MenuItem extends Model
         'name',
         'base_price',
         'is_available',
-        'image_url'
+        'image_url',
     ];
 
     public function category()
@@ -29,7 +29,7 @@ class MenuItem extends Model
     {
         return $this->belongsToMany(
             Addon::class,
-            'item_addons'
+            'item_addons',
         );
     }
 
@@ -37,8 +37,7 @@ class MenuItem extends Model
     {
         return $this->belongsToMany(
             Tag::class,
-            'menu_item_tags'
+            'menu_item_tags',
         );
     }
-
 }
