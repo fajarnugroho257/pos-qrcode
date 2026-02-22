@@ -32,7 +32,7 @@ class MenuController extends Controller
                 ->with([
                     'category:id,name',
                     'variants:id,menu_item_id,name,price_modifier',
-                    'addons:id,name,price',
+                    "addons:id,name,price",
                     'tags:id,name',
                 ])
                 ->when($request->category_id, fn ($q) =>
