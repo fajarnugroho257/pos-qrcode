@@ -126,6 +126,8 @@ class MenuListController extends Controller
 
         });
 
+        clear_menu_cache(auth()->user()->activeRestaurant()->id);
+
         return redirect()
             ->route('menuItems')
             ->with('success', 'Menu berhasil ditambahkan');
@@ -234,6 +236,7 @@ class MenuListController extends Controller
             $menuItem->addons()->sync($request->addons ?? []);
             $menuItem->tags()->sync($request->tags ?? []);
         });
+        clear_menu_cache(auth()->user()->activeRestaurant()->id);
 
         return redirect()
             ->route('menuItems')
@@ -251,6 +254,8 @@ class MenuListController extends Controller
         }
 
         $item->delete();
+
+        clear_menu_cache(auth()->user()->activeRestaurant()->id);
 
         return redirect()
             ->route('menuItems')

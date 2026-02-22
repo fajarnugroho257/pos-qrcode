@@ -76,6 +76,8 @@ class MenuTagsController extends Controller
             'name' => $request->name,
         ]);
 
+        clear_menu_cache(auth()->user()->activeRestaurant()->id);
+
         return redirect()
             ->route('menuTags')
             ->with('success', 'Tag berhasil diperbarui');
@@ -87,6 +89,8 @@ class MenuTagsController extends Controller
             ->findOrFail($id);
 
         $tag->delete();
+
+        clear_menu_cache(auth()->user()->activeRestaurant()->id);
 
         return redirect()
             ->route('menuTags')

@@ -99,8 +99,10 @@ class MenuController extends Controller
         $perPage = $request->integer('per_page', 10);
         $page = $request->integer('page', 1);
 
+        $version = Cache::get("menu_version:{$restaurantId}", 1);
         // cache key harus unik per filter & page
         $cacheKey = 'menu_' . md5(json_encode([
+            'version' => $version,
             'restaurant_id' => $restaurantId,
             'category_id' => $request->category_id,
             'search' => $request->search,
@@ -109,7 +111,7 @@ class MenuController extends Controller
             'per_page' => $perPage,
         ]));
 
-        $menus = Cache::remember($cacheKey, 60, function () use ($request, $restaurantId, $perPage) {
+        $menus = Cache::remember($cacheKey, 300, function () use ($request, $restaurantId, $perPage) {
 
             return MenuItem::query()
                 ->where('restaurant_id', $restaurantId)

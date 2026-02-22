@@ -87,6 +87,8 @@ class MenuAddonsController extends Controller
             'price' => $request->price,
         ]);
 
+        clear_menu_cache(auth()->user()->activeRestaurant()->id);
+
         return redirect()
             ->route('menuAddons')
             ->with('success', 'Addon berhasil diperbarui');
