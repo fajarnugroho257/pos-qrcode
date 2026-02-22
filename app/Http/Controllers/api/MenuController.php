@@ -12,16 +12,16 @@ class MenuController extends Controller
     public function index(Request $request, $restaurantId)
     {
         $perPage = $request->integer('per_page', 10);
-        $page    = $request->integer('page', 1);
+        $page = $request->integer('page', 1);
 
         // cache key harus unik per filter & page
         $cacheKey = 'menu_' . md5(json_encode([
             'restaurant_id' => $restaurantId,
-            'category_id'   => $request->category_id,
-            'search'        => $request->search,
-            'tags'          => $request->tags,
-            'page'          => $page,
-            'per_page'      => $perPage,
+            'category_id' => $request->category_id,
+            'search' => $request->search,
+            'tags' => $request->tags,
+            'page' => $page,
+            'per_page' => $perPage,
         ]));
 
         $menus = Cache::remember($cacheKey, 60, function () use ($request, $restaurantId, $perPage) {
@@ -32,19 +32,22 @@ class MenuController extends Controller
                 ->with([
                     'category:id,name',
                     'variants:id,menu_item_id,name,price_modifier',
-                    "addons:id,name,price",
+                    'addons:id,name,price',
                     'tags:id,name',
                 ])
-                ->when($request->category_id, fn ($q) =>
-                    $q->where('category_id', $request->category_id)
+                ->when(
+                    $request->category_id,
+                    fn ($q) => $q->where('category_id', $request->category_id),
                 )
-                ->when($request->search, fn ($q) =>
-                    $q->where('name', 'like', '%' . $request->search . '%')
+                ->when(
+                    $request->search,
+                    fn ($q) => $q->where("name", 'like', '%' . $request->search . '%'),
                 )
-                ->when(! empty($request->tags), fn ($q) =>
-                    $q->whereHas('tags', function ($tagQuery) use ($request) {
+                ->when(
+                    ! empty($request->tags),
+                    fn ($q) => $q->whereHas('tags', function ($tagQuery) use ($request) {
                         $tagQuery->whereIn('name', $request->tags);
-                    }, '=', count($request->tags))
+                    }, '=', count($request->tags)),
                 )
                 ->orderBy('name')
                 ->paginate($perPage)
@@ -82,9 +85,9 @@ class MenuController extends Controller
 
             'meta' => [
                 'current_page' => $menus->currentPage(),
-                'last_page'    => $menus->lastPage(),
-                'per_page'     => $menus->perPage(),
-                'total'        => $menus->total(),
+                'last_page' => $menus->lastPage(),
+                'per_page' => $menus->perPage(),
+                'total' => $menus->total(),
             ],
 
             // 'links' => [
