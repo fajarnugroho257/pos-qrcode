@@ -10,6 +10,7 @@ class ItemVariant extends Model
         'menu_item_id',
         'name',
         'price_modifier',
+        'is_default',
     ];
 
     public function menuItem()
