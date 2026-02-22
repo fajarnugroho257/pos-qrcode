@@ -1,5 +1,0 @@
-#!/usr/bin/env sh
-. "$(dirname "$0")/_/h"
-
-echo "PRE-COMMIT RUNNING"
-vendor/bin/pint --dirty
