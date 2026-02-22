@@ -7,6 +7,80 @@ use App\Models\MenuItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * @OA\Get(
+ *     path="/api/restaurants/{restaurant}/menus",
+ *     operationId="getRestaurantMenus",
+ *     tags={"Menus"},
+ *     summary="Get restaurant menu list",
+ *     description="Public endpoint to fetch menus with pagination, search, category and tags filter",
+ *
+ *     @OA\Parameter(
+ *         name="restaurant",
+ *         in="path",
+ *         required=true,
+ *         description="Restaurant ID",
+ *         @OA\Schema(type="integer", example=1)
+ *     ),
+ *
+ *     @OA\Parameter(
+ *         name="page",
+ *         in="query",
+ *         @OA\Schema(type="integer", example=1)
+ *     ),
+ *
+ *     @OA\Parameter(
+ *         name="per_page",
+ *         in="query",
+ *         @OA\Schema(type="integer", example=10)
+ *     ),
+ *
+ *     @OA\Parameter(
+ *         name="search",
+ *         in="query",
+ *         description="Search menu name",
+ *         @OA\Schema(type="string")
+ *     ),
+ *
+ *     @OA\Parameter(
+ *         name="category_id",
+ *         in="query",
+ *         @OA\Schema(type="integer")
+ *     ),
+ *
+ *     @OA\Parameter(
+ *         name="tags[]",
+ *         in="query",
+ *         description="Filter by tag names",
+ *         @OA\Schema(
+ *             type="array",
+ *             @OA\Items(type="string", example="pedas")
+ *         )
+ *     ),
+ *
+ *     @OA\Response(
+ *         response=200,
+ *         description="Success",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="success", type="boolean", example=true),
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="array",
+ *                 @OA\Items(type="object")
+ *             ),
+ *             @OA\Property(
+ *                 property="meta",
+ *                 type="object",
+ *                 @OA\Property(property="current_page", type="integer"),
+ *                 @OA\Property(property="last_page", type="integer"),
+ *                 @OA\Property(property="per_page", type="integer"),
+ *                 @OA\Property(property="total", type="integer")
+ *             )
+ *         )
+ *     )
+ * )
+ */
 class MenuController extends Controller
 {
     public function index(Request $request, $restaurantId)
@@ -47,7 +121,7 @@ class MenuController extends Controller
                     ! empty($request->tags),
                     fn ($q) => $q->whereHas('tags', function ($tagQuery) use ($request) {
                         $tagQuery->whereIn('name', $request->tags);
-                    }, '=', count($request->tags)),
+                    }),
                 )
                 ->orderBy('name')
                 ->paginate($perPage)
