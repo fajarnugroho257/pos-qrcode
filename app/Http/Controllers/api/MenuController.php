@@ -20,18 +20,21 @@ use Illuminate\Support\Facades\Cache;
  *         in="path",
  *         required=true,
  *         description="Restaurant ID",
+ *
  *         @OA\Schema(type="integer", example=1)
  *     ),
  *
  *     @OA\Parameter(
  *         name="page",
  *         in="query",
+ *
  *         @OA\Schema(type="integer", example=1)
  *     ),
  *
  *     @OA\Parameter(
  *         name="per_page",
  *         in="query",
+ *
  *         @OA\Schema(type="integer", example=10)
  *     ),
  *
@@ -39,12 +42,14 @@ use Illuminate\Support\Facades\Cache;
  *         name="search",
  *         in="query",
  *         description="Search menu name",
+ *
  *         @OA\Schema(type="string")
  *     ),
  *
  *     @OA\Parameter(
  *         name="category_id",
  *         in="query",
+ *
  *         @OA\Schema(type="integer")
  *     ),
  *
@@ -52,8 +57,10 @@ use Illuminate\Support\Facades\Cache;
  *         name="tags[]",
  *         in="query",
  *         description="Filter by tag names",
+ *
  *         @OA\Schema(
  *             type="array",
+ *
  *             @OA\Items(type="string", example="pedas")
  *         )
  *     ),
@@ -61,14 +68,18 @@ use Illuminate\Support\Facades\Cache;
  *     @OA\Response(
  *         response=200,
  *         description="Success",
+ *
  *         @OA\JsonContent(
  *             type="object",
+ *
  *             @OA\Property(property="success", type="boolean", example=true),
  *             @OA\Property(
  *                 property="data",
  *                 type="array",
+ *
  *                 @OA\Items(type="object")
  *             ),
+ *
  *             @OA\Property(
  *                 property="meta",
  *                 type="object",
@@ -115,7 +126,7 @@ class MenuController extends Controller
                 )
                 ->when(
                     $request->search,
-                    fn ($q) => $q->where("name", 'like', '%' . $request->search . '%'),
+                    fn ($q) => $q->where('name', 'like', '%' . $request->search . '%'),
                 )
                 ->when(
                     ! empty($request->tags),
