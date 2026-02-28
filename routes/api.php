@@ -22,6 +22,10 @@ Route::get('/restaurants/{restaurant}/menus', [MenuController::class, 'index']);
 Route::get('/restaurants/{restaurant}/tags', [TagsController::class, 'index']);
 Route::get('/restaurants/{restaurant}/menus/{menu}/variants', [MenuVariantController::class, 'index']);
 Route::get('/restaurants/{restaurant}/menus/{menu}/addons', [MenuAddonController::class, 'index']);
+Route::get(
+    '/restaurants/{restaurant}/menus/{menu}',
+    [MenuController::class, 'show'],
+);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

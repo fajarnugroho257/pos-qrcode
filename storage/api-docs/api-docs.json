@@ -225,6 +225,44 @@
                 }
             }
         },
+        "/api/restaurants/{restaurant}/menus/{menu}": {
+            "get": {
+                "tags": [
+                    "Menus"
+                ],
+                "summary": "Get single menu detail",
+                "description": "Public endpoint to fetch a single menu detail",
+                "operationId": "getRestaurantMenuDetail",
+                "parameters": [
+                    {
+                        "name": "restaurant",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "menu",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "Menu not found"
+                    }
+                }
+            }
+        },
         "/api/restaurants/{restaurant}/menus/{menu}/variants": {
             "get": {
                 "tags": [

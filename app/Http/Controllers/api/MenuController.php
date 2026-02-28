@@ -183,4 +183,106 @@ class MenuController extends Controller
             // ],
         ]);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/restaurants/{restaurant}/menus/{menu}",
+     *     operationId="getRestaurantMenuDetail",
+     *     tags={"Menus"},
+     *     summary="Get single menu detail",
+     *     description="Public endpoint to fetch a single menu detail",
+     *
+     *     @OA\Parameter(
+     *         name="restaurant",
+     *         in="path",
+     *         required=true,
+     *
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *
+     *     @OA\Parameter(
+     *         name="menu",
+     *         in="path",
+     *         required=true,
+     *
+     *         @OA\Schema(type="integer", example=10)
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Menu not found"
+     *     )
+     * )
+     */
+    public function show($restaurantId, $menuId)
+    {
+        $version = Cache::get("menu_version:{$restaurantId}", 1);
+
+        $cacheKey = 'menu_detail_' . md5(json_encode([
+            'version' => $version,
+            'restaurant_id' => $restaurantId,
+            'menu_id' => $menuId,
+        ]));
+
+        $menu = Cache::remember($cacheKey, 300, function () use ($restaurantId, $menuId) {
+
+            $menu = MenuItem::query()
+                ->where('restaurant_id', $restaurantId)
+                ->where('id', $menuId)
+                ->where('is_available', true)
+                ->with([
+                    'category:id,name',
+                    'variants:id,menu_item_id,name,price_modifier',
+                    'addons:id,name,price',
+                    'tags:id,name',
+                ])
+                ->first();
+
+            if (! $menu) {
+                return null;
+            }
+
+            return [
+                'id' => $menu->id,
+                'name' => $menu->name,
+                'description' => $menu->description,
+                'base_price' => (int) $menu->base_price,
+                'image_url' => $menu->image_url
+                    ? asset('storage/' . $menu->image_url)
+                    : null,
+
+                'category' => $menu->category,
+
+                'variants' => $menu->variants->map(fn ($v) => [
+                    'id' => $v->id,
+                    'name' => $v->name,
+                    'price_modifier' => (int) $v->price_modifier,
+                ]),
+
+                'addons' => $menu->addons->map(fn ($a) => [
+                    'id' => $a->id,
+                    'name' => $a->name,
+                    'price' => (int) $a->price,
+                ]),
+
+                'tags' => $menu->tags->pluck('name'),
+            ];
+        });
+
+        if (! $menu) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Menu not found',
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $menu,
+        ]);
+    }
 }
