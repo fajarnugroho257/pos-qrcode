@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Responses\ApiResponse;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 
@@ -72,6 +73,8 @@ use Illuminate\Http\Request;
  */
 class TagsController extends Controller
 {
+    use ApiResponse;
+
     public function index(Request $request, $restaurantId)
     {
         $perPage = $request->integer('per_page', 10);
@@ -80,16 +83,6 @@ class TagsController extends Controller
             ->orderBy('name')
             ->paginate($perPage);
 
-        return response()->json([
-            'success' => true,
-            'data' => $tags->items(),
-
-            'meta' => [
-                'current_page' => $tags->currentPage(),
-                'last_page' => $tags->lastPage(),
-                'per_page' => $tags->perPage(),
-                'total' => $tags->total(),
-            ],
-        ]);
+        return $this->successPaginated($tags);
     }
 }

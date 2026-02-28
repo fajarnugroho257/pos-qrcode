@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Responses\ApiResponse;
 use App\Models\MenuItem;
 use Illuminate\Http\Request;
 
@@ -81,6 +82,8 @@ use Illuminate\Http\Request;
  */
 class MenuAddonController extends Controller
 {
+    use ApiResponse;
+
     public function index(Request $request, $restaurantId, $menuId)
     {
         $perPage = $request->integer('per_page', 10);
@@ -93,15 +96,6 @@ class MenuAddonController extends Controller
             ->orderBy('name')
             ->paginate($perPage);
 
-        return response()->json([
-            'success' => true,
-            'data' => $addons->items(),
-            'meta' => [
-                'current_page' => $addons->currentPage(),
-                'last_page' => $addons->lastPage(),
-                'per_page' => $addons->perPage(),
-                'total' => $addons->total(),
-            ],
-        ]);
+        return $this->successPaginated($addons);
     }
 }

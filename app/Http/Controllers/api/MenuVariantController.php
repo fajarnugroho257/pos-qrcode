@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Responses\ApiResponse;
 use App\Models\ItemVariant;
 use Illuminate\Http\Request;
 
@@ -83,6 +84,8 @@ use Illuminate\Http\Request;
  */
 class MenuVariantController extends Controller
 {
+    use ApiResponse;
+
     public function index(Request $request, $restaurantId, $menuId)
     {
         $perPage = $request->integer('per_page', 10);
@@ -94,15 +97,6 @@ class MenuVariantController extends Controller
             ->orderBy('name')
             ->paginate($perPage);
 
-        return response()->json([
-            'success' => true,
-            'data' => $variants->items(),
-            'meta' => [
-                'current_page' => $variants->currentPage(),
-                'last_page' => $variants->lastPage(),
-                'per_page' => $variants->perPage(),
-                'total' => $variants->total(),
-            ],
-        ]);
+        return $this->successPaginated($variants);
     }
 }

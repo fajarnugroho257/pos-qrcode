@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Responses\ApiResponse;
 use App\Models\MenuItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -94,6 +95,8 @@ use Illuminate\Support\Facades\Cache;
  */
 class MenuController extends Controller
 {
+    use ApiResponse;
+
     public function index(Request $request, $restaurantId)
     {
         $perPage = $request->integer('per_page', 10);
@@ -166,22 +169,7 @@ class MenuController extends Controller
                 });
         });
 
-        return response()->json([
-            'success' => true,
-            'data' => $menus->items(),
-
-            'meta' => [
-                'current_page' => $menus->currentPage(),
-                'last_page' => $menus->lastPage(),
-                'per_page' => $menus->perPage(),
-                'total' => $menus->total(),
-            ],
-
-            // 'links' => [
-            //     'next' => $menus->nextPageUrl(),
-            //     'prev' => $menus->previousPageUrl(),
-            // ],
-        ]);
+        return $this->successPaginated($menus);
     }
 
     /**
@@ -240,11 +228,7 @@ class MenuController extends Controller
                     'addons:id,name,price',
                     'tags:id,name',
                 ])
-                ->first();
-
-            if (! $menu) {
-                return null;
-            }
+                ->firstOrFail();
 
             return [
                 'id' => $menu->id,
@@ -273,16 +257,6 @@ class MenuController extends Controller
             ];
         });
 
-        if (! $menu) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Menu not found',
-            ], 404);
-        }
-
-        return response()->json([
-            'success' => true,
-            'data' => $menu,
-        ]);
+        return $this->success($menu);
     }
 }
